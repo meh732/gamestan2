@@ -16,6 +16,7 @@ NC='\033[0m'
 REPO_URL="https://github.com/meh732/gamestan2.git"
 INSTALL_DIR="/var/www/gamestan2"
 DEFAULT_PORT=3000
+APP_PORT=3000
 
 clear
 
@@ -66,6 +67,11 @@ install_deps() {
     fi
 }
 
+ask_port() {
+    read -p "🔌 پورت دلخواه برای اجرای گیمستان را وارد کنید (پیش‌فرض 3000): " INPUT_PORT
+    APP_PORT=${INPUT_PORT:-3000}
+}
+
 deploy_app() {
     echo -e "${BLUE}📥 دریافت سورس‌کد از https://github.com/meh732/gamestan2.git ...${NC}"
     if [ -d "$INSTALL_DIR" ]; then
@@ -83,13 +89,13 @@ deploy_app() {
     echo -e "${BLUE}🏗️ در حال کامپایل و بیلد پروژه...${NC}"
     npm run build
 
-    echo -e "${BLUE}🚀 راه‌اندازی سرویس با PM2...${NC}"
+    echo -e "${BLUE}🚀 راه‌اندازی سرویس با PM2 روی پورت $APP_PORT...${NC}"
     pm2 delete gamestan2 &> /dev/null || true
-    pm2 start npm --name "gamestan2" -- run preview -- --port $DEFAULT_PORT --host
+    pm2 start npm --name "gamestan2" -- run preview -- --port $APP_PORT --host
     pm2 save
     pm2 startup | tail -n 1 | bash &> /dev/null || true
 
-    echo -e "${GREEN}✅ پروژه با موفقیت روی پورت $DEFAULT_PORT بالا آمد.${NC}"
+    echo -e "${GREEN}✅ پروژه با موفقیت روی پورت $APP_PORT بالا آمد.${NC}"
 }
 
 setup_nginx() {
@@ -106,7 +112,7 @@ server {
     server_name $DOMAIN;
 
     location / {
-        proxy_pass http://127.0.0.1:$DEFAULT_PORT;
+        proxy_pass http://127.0.0.1:$APP_PORT;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -139,9 +145,9 @@ main_menu() {
     read -p "انتخاب شما [0-5]: " OPTION
 
     case $OPTION in
-        1) install_deps; deploy_app; setup_nginx ;;
-        2) deploy_app ;;
-        3) setup_nginx ;;
+        1) ask_port; install_deps; deploy_app; setup_nginx ;;
+        2) ask_port; deploy_app ;;
+        3) ask_port; setup_nginx ;;
         4) pm2 status ;;
         5) pm2 logs gamestan2 ;;
         0) exit 0 ;;
