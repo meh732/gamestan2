@@ -1,0 +1,6 @@
+{
+  "name": "Gamestan",
+  "description": "پروژه گیمستان - تحلیل و توسعه کلاینت MauiApp5 در .NET 9 MAUI",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
