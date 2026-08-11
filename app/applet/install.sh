@@ -135,6 +135,33 @@ EOF2
     fi
 }
 
+uninstall_app() {
+    echo -e "${RED}⚠️ هشدار: این کار تمام فایل‌های گیمستان و تنظیمات آن را از سرور حذف می‌کند!${NC}"
+    read -p "آیا از حذف کامل مطمئن هستید؟ (y/n): " CONFIRM_DEL
+    if [[ "$CONFIRM_DEL" =~ ^[Yy]$ ]]; then
+        echo -e "${BLUE}🗑️ در حال متوقف کردن سرویس در PM2...${NC}"
+        pm2 delete gamestan2 &> /dev/null || true
+        pm2 save &> /dev/null || true
+        
+        echo -e "${BLUE}🗑️ در حال پاک کردن فایل‌های پروژه...${NC}"
+        rm -rf "$INSTALL_DIR"
+        
+        read -p "🌐 آیا می‌خواهید تنظیمات دامنه در Nginx هم پاک شود؟ (y/n): " DEL_NGINX
+        if [[ "$DEL_NGINX" =~ ^[Yy]$ ]]; then
+            read -p "دامنه خود را وارد کنید (مثال: game.domain.com): " DEL_DOMAIN
+            if [ -n "$DEL_DOMAIN" ]; then
+                rm -f /etc/nginx/sites-available/$DEL_DOMAIN
+                rm -f /etc/nginx/sites-enabled/$DEL_DOMAIN
+                systemctl restart nginx
+                echo -e "${GREEN}✅ تنظیمات Nginx برای دامنه $DEL_DOMAIN حذف شد.${NC}"
+            fi
+        fi
+        echo -e "${GREEN}✅ گیمستان با موفقیت از روی سرور شما حذف شد.${NC}"
+    else
+        echo -e "${YELLOW}عملیات حذف لغو شد.${NC}"
+    fi
+}
+
 main_menu() {
     show_logo
     check_root
@@ -143,9 +170,10 @@ main_menu() {
     echo -e "${PURPLE}3)${NC} 🌐 اتصال دامنه و تنظیم Nginx + SSL"
     echo -e "${PURPLE}4)${NC} 📊 وضعیت اجرای برنامه (PM2 Status)"
     echo -e "${PURPLE}5)${NC} 📜 مشاهده لاگ‌های آنلاین (PM2 Logs)"
+    echo -e "${PURPLE}6)${NC} 🗑️ حذف کامل پروژه (Uninstall)"
     echo -e "${PURPLE}0)${NC} ❌ خروج"
     echo ""
-    read -p "انتخاب شما [0-5]: " OPTION
+    read -p "انتخاب شما [0-6]: " OPTION
 
     case $OPTION in
         1) ask_port; install_deps; deploy_app; setup_nginx ;;
@@ -153,6 +181,7 @@ main_menu() {
         3) ask_port; setup_nginx ;;
         4) pm2 status ;;
         5) pm2 logs gamestan2 ;;
+        6) uninstall_app ;;
         0) exit 0 ;;
         *) echo -e "${RED}گزینه نامعتبر!${NC}" ;;
     esac
