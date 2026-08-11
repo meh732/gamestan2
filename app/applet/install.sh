@@ -15,7 +15,6 @@ NC='\033[0m'
 
 REPO_URL="https://github.com/meh732/gamestan2.git"
 INSTALL_DIR="/var/www/gamestan2"
-DEFAULT_PORT=3000
 APP_PORT=3000
 
 clear
@@ -43,6 +42,15 @@ check_root() {
     fi
 }
 
+ask_port() {
+    read -p "🔌 پورت دلخواه برای اجرای گیمستان را وارد کنید (پیش‌فرض 3000): " INPUT_PORT
+    if [ -z "$INPUT_PORT" ]; then
+        APP_PORT=3000
+    else
+        APP_PORT=$INPUT_PORT
+    fi
+}
+
 install_deps() {
     echo -e "${BLUE}🔄 در حال بروزرسانی مخازن و نصب پیش‌نیازها...${NC}"
     if [ -f /etc/debian_version ]; then
@@ -65,11 +73,6 @@ install_deps() {
         echo -e "${BLUE}📦 در حال نصب PM2...${NC}"
         npm install -g pm2
     fi
-}
-
-ask_port() {
-    read -p "🔌 پورت دلخواه برای اجرای گیمستان را وارد کنید (پیش‌فرض 3000): " INPUT_PORT
-    APP_PORT=${INPUT_PORT:-3000}
 }
 
 deploy_app() {
