@@ -1,4 +1,4 @@
-export type GameType = 'chess' | 'othello' | 'sudoku' | 'puzzle' | 'word' | 'quiz' | 'gardoone' | 'profile' | 'chat' | 'home';
+export type GameType = 'chess' | 'othello' | 'sudoku' | 'puzzle' | 'word' | 'quiz' | 'gardoone' | 'profile' | 'chat' | 'home' | 'friends';
 
 export interface UserProfile {
   name: string;

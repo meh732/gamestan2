@@ -112,16 +112,16 @@ export const WebAppView: React.FC<WebAppViewProps> = ({
       {/* Game Content View Area */}
       <div className="flex-1 bg-slate-900 border border-slate-800 rounded-2xl p-4 overflow-y-auto flex flex-col justify-start">
         {activeScreen === 'home' && <HomeHubView onSelectGame={setActiveScreen} setActiveScreen={setActiveScreen} />}
-        {activeScreen === 'chess' && <ChessView profile={profile} setProfile={setProfile} />}
-        {activeScreen === 'othello' && <OthelloView profile={profile} setProfile={setProfile} />}
-        {activeScreen === 'sudoku' && <SudokuView profile={profile} setProfile={setProfile} />}
-        {activeScreen === 'puzzle' && <PuzzleView profile={profile} setProfile={setProfile} />}
-        {activeScreen === 'word' && <WordView profile={profile} setProfile={setProfile} />}
-        {activeScreen === 'quiz' && <QuizView profile={profile} setProfile={setProfile} />}
-        {activeScreen === 'gardoone' && <GardooneView profile={profile} setProfile={setProfile} />}
+        {activeScreen === 'chess' && <ChessView />}
+        {activeScreen === 'othello' && <OthelloView />}
+        {activeScreen === 'sudoku' && <SudokuView />}
+        {activeScreen === 'puzzle' && <PuzzleView />}
+        {activeScreen === 'word' && <WordView />}
+        {activeScreen === 'quiz' && <QuizView />}
+        {activeScreen === 'gardoone' && <GardooneView />}
         {activeScreen === 'profile' && <ProfileView profile={profile} />}
-        {activeScreen === 'chat' && <ChatFriendsView profile={profile} />}
-        {activeScreen === 'friends' && <ChatFriendsView profile={profile} />}
+        {activeScreen === 'chat' && <ChatFriendsView />}
+        {activeScreen === 'friends' && <ChatFriendsView />}
       </div>
     </div>
   );
